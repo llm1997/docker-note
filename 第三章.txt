@@ -1,0 +1,73 @@
+第三章 镜像
+3.1镜像
+  镜像是一个包含程序运行必要依赖环境和代码的只读文件，采用分层的文件系统将每一次改变以读写层的形式增加到原来的只读文件上。
+
+3.2本地镜像的管理
+3.2.1 查看
+  docker images
+3.2.2 删除
+  docker rmi 镜像名称
+
+3.3创建本地镜像
+3.3.1 从容器中创建镜像
+  *docker commit -m="描述信息" --author="作者" 容器ID 账号/镜像名
+
+3.3.2使用dockerfile创建镜像
+  *dockerfile实例：
+  ----------------
+  #Version：1.0.1
+  FROM ubuntu:latest
+
+  MAINTAINER user（用户名）"邮箱"
+
+  #设置root用户为后续命令的执行者
+  USER root
+
+  #执行操作
+  RUN apt-get update
+  RUN apt-get install -y nginx
+
+  #使用&&拼接命令
+  RUN touch test.txt && echo "abc" >> abc.txt
+
+  #添加文件和文件夹，注意，必须是相对于dockerfile的相对路径
+  ADD abc.txt /opt/
+  ADD /webapp /opt/webapp
+
+  #对外暴露端口
+  EXPOSE 80 8080
+
+  #设置环境变量
+  ENV WEBAPP_PORT=9090
+
+  #设置工作目录
+  WORKDIR /opt
+
+  #设置启动命令
+  ENTRYPOINT ["ls"]
+
+  #设置启动参数
+  CMD ["-a","-l"]
+
+  #设置卷
+  VOLUME ["/data","/var/www"]
+
+  ---------------------------
+  注意：CMD和ENTRYPOINT区别（都是开机启动参数）
+  *CMD 相当于运行容器时添加在镜像名之后的参数
+    若CMD ["-c","/bin/bash"]
+    例如docker run -it ubuntu 
+    此时相当于docker run -it ubuntu -c /bin/bash
+    如果docker run -it ubuntu 其他命令
+    此时CMD 命令将无效，会被覆盖
+
+  *ENTRYPOINT 相当于运行容器时添加在镜像名之后的参数，不同的是，启动命令参数接在这个参数之后
+    若ENTRYPOINT ["ls"]
+    例如 docker run -it ubuntu  /opt
+    此时相当于docker run -it ubuntu ls /opt
+
+  *创建命令
+    docker build -t 账号/镜像名 路径
+
+  *可以使用github上的dockerfile来创建
+    docker build -t 账户/镜像名 git://地址

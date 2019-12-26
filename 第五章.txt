@@ -1,0 +1,32 @@
+第五章 创建SSH服务镜像
+
+5.1 基于commit命令方式
+
+5.1.1创建ubuntu容器，修改其配置的软件源
+  *docker run -it ubuntu /bin/bash
+  *apt-get update 不运行将无法安装软件
+  *apt-get install sudo
+  *apt-get install vim
+  *vi /etc/apt/source.list 添加阿里的云源
+    ------------------------
+    deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+	deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+	deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+	deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+	deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+	deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
+	deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
+	deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
+	deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
+	deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+	------------------------
+  *apt-get install openssh-server 安装ssh服务
+  *安装ssh需要目录 mkdir -p /var/run/sshd
+  *去除ssh限制
+    --------------------------
+     vi /etc/pam.d/sshd
+    给这个话加上注释 session    required     pam_loginuid.so
+    --------------------------
+ 5.1.2在自己主机上生成公钥
+   *ssh-keygen
+   
